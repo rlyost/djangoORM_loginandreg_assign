@@ -19,7 +19,7 @@
         
         <form action='/login' method='POST'>
             {% csrf_token %}
-            <h2>Please Login</h2>
+            <h2>Login</h2>
             <label for="logemail">Email:<input type="text" name="logemail" id="logemail"></label>
             <label for="logpassword">Password:<input type="password" name="logpassword" id="logpassword"></label>
             <input type="submit" value="Login">
@@ -27,7 +27,7 @@
 
         <form action='/registration' method='POST'>
             {% csrf_token %}
-            <h2>Register New User</h2>
+            <h2>Register</h2>
             <label for="fname">First Name:<input type="text" name="fname" id="fname"></label>
             <label for="lname">Last Name:<input type="text" name="lname" id="lname"></label>
             <label for="regemail">Email:<input type="text" name="regemail" id="regemail"></label>       
