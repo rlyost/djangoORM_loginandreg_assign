@@ -9,13 +9,15 @@
     <link rel='stylesheet' href="{% static 'css/logreg/logreg.css' %}" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
-    {% if messages %}
-        {% for message in messages %}
-            <div {% if message.tags %} class='{{ message.tags }}' {% endif %}>
-                <p class='blue'>{{ message }}</p>
-            </div>
-        {% endfor %}
-    {% endif %}
-    <a href="/">Go Back</a>
+    <div id='wrapper'>
+        {% if messages %}
+            {% for message in messages %}
+                <div {% if message.tags %} class='{{ message.tags }}' {% endif %}>
+                    <p class='blue'>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <a href="/">Go Back</a>
+    </div>
 </body>
 </html>
