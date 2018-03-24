@@ -4,8 +4,6 @@ from django.core.urlresolvers import reverse
 from time import gmtime, strftime
 from .models import *    
 import bcrypt
-import re
-EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 # HOME *************************************************
 
@@ -27,9 +25,9 @@ def registration(request):
         else:
             request.session['from'] = 0
             #creates a new validated record in database for new user
-            User.objects.create(first_name=request.session['fname'], last_name=request.POST['lname'], email=request.POST['regemail'], password=hashed_password)
+            user = User.objects.create(first_name=request.session['fname'], last_name=request.POST['lname'], email=request.POST['regemail'], password=hashed_password)
             #sets logged in user for use later
-            request.session['id'] = User.objects.last().id
+            request.session['id'] = user.id
             request.session['from'] = 0
             #redirects to success to display sucessful login
             return redirect('usuccess')
@@ -44,10 +42,11 @@ def login(request):
                 messages.error(request, error, extra_tags=tag)
             return redirect('/')
         else:
-            #sets logged in user id for use later  
-            request.session['id'] = User.objects.get(email=request.POST['logemail']).id
+            #sets logged in user id for use later
+            user = User.objects.get(email=request.POST['logemail'])
+            request.session['id'] = user.id
             #sets First name for user interaction
-            request.session['fname'] = User.objects.get(email=request.POST['logemail']).first_name
+            request.session['fname'] = user.first_name
             #sets login or registration indicator
             request.session['from'] = 1
             #redirects to success to display sucessful login
