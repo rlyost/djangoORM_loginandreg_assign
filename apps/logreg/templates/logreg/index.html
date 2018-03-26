@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login and Registration - Django</title>
+  <title>Wish List</title>
   {% load static %}
     <link rel='stylesheet' href="{% static 'css/logreg/logreg.css' %}" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
     <div id='wrapper'>
-        <h1>Yost Login and Registration Page</h1>
+        <h1>Welcome!</h1>
         
         {% if messages %}
             {% for message in messages %}
@@ -20,7 +20,7 @@
         <form action='/login' method='POST'>
             {% csrf_token %}
             <h2>Login</h2>
-            <label for="logemail">Email:<input type="text" name="logemail" id="logemail"></label>
+            <label for="user_name">Username:<input type="text" name="user_name" id="user_name"></label>
             <label for="logpassword">Password:<input type="password" name="logpassword" id="logpassword"></label>
             <input type="submit" value="Login">
         </form>
@@ -28,11 +28,12 @@
         <form action='/registration' method='POST'>
             {% csrf_token %}
             <h2>Register</h2>
-            <label for="fname">First Name:<input type="text" name="fname" id="fname"></label>
-            <label for="lname">Last Name:<input type="text" name="lname" id="lname"></label>
-            <label for="regemail">Email:<input type="text" name="regemail" id="regemail"></label>       
+            <label for="name">Name:<input type="text" name="name" id="name"></label>
+            <label for="user_name">Username:<input type="text" name="user_name" id="user_name"></label>
             <label for="regpassword">Password:<input type="password" name="regpassword" id="regpassword"></label>
-            <label for="regpassword2">Password Confirmation:<input type="password" name="regpassword2" id="regpassword2"></label>
+            <p>*Password should be at least 8 charaters</p>
+            <label for="regpassword2">Confirm PW:<input type="password" name="regpassword2" id="regpassword2"></label>
+            <label for="hired_at">Date Hired:<input type="date" name="hired_at" id="hired_at"></label>
             <input type="submit" value="Register">
         </form>
     </div>

@@ -1,0 +1,15 @@
+<html>
+<head>
+    <title>Wish Item</title>
+    {% load static %}
+    <link rel='stylesheet' href="{% static 'css/logreg/logreg.css' %}" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+    <a href="{%url 'dash' %}" class="options">Home</a><a href="{%url 'logoff' %}" class="options">Logout</a>
+    <h1>{{ item.name }}</h1>
+    <p>Users who added this product/item under their wish list:</p>
+    {% for user in users %}
+        <p>{{ user.name }}</p>
+    {% endfor %}
+</body>
+</html>

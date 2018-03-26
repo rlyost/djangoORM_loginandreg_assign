@@ -1,52 +1,41 @@
 from __future__ import unicode_literals
 from django.db import models
 import bcrypt
-import re
-EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 class UserManager(models.Manager):
     def log_validator(self, postData):
         errors = {}
-        log_email = postData['logemail']
-        log_check = User.objects.filter(email=log_email)
+        log_user = postData['user_name']
+        log_check = User.objects.filter(user_name=log_user)
         # Validates email address for proper format.
-        if len(log_email) < 1:
-            errors["email"] = "Email cannot be blank!"
-            return errors
-        elif not EMAIL_REGEX.match(log_email):
-            errors["email"] = "Invalid Email Address!"
+        if len(log_user) < 3:
+            errors["user"] = "Username must be 3 characters of more"
             return errors
         elif len(log_check) == 0:
-            errors["email"] = "Email not found!"
+            errors["user"] = "Username not found!"
             return errors
-        log_pass = User.objects.get(email=log_email).password
+        log_pass = User.objects.get(user_name=log_user).password
         #password validation - compares hashed logged in password to hashed Db password
         if not bcrypt.checkpw(postData['logpassword'].encode(), log_pass.encode()):
-            errors["email"] = "Password does not match."
+            errors["user"] = "Password does not match."
             return errors
     def reg_validator(self, postData):
         errors = {}
-        #grabs record if email exists in the Db
-        reg_check = User.objects.filter(email=postData['regemail'])
+        #grabs record if user exists in the Db
+        reg_check = User.objects.filter(user_name=postData['user_name'])
         # Checks name fields
-        if len(postData['fname']) < 2 or len(postData['lname']) < 2:
+        if len(postData['name']) < 3:
             errors["name"] = "Name must be longer."
             return errors
-        elif not str(postData['fname']).isalpha():
-            errors["name"] = "First Name can only be letters."
+        elif not str(postData['name']).isalpha():
+            errors["name"] = "Name can only be letters."
             return errors       
-        elif not str(postData['lname']).isalpha():
-            errors["name"] = "Last Name can only be letters."
-            return errors
-        # Validates email address for proper format.
-        if len(postData['regemail']) < 1:
-            errors["email"] = "Email cannot be blank!"
-            return errors
-        elif not EMAIL_REGEX.match(postData['regemail']):
-            errors["email"] = "Invalid Email Address!"
+        # Validates username for proper format.
+        if len(postData['user_name']) < 3:
+            errors["user"] = "Username must be 3 characters of more"
             return errors
         elif len(reg_check) != 0:
-            errors["email"] = "Duplicate address, please enter another one or try logging in!"
+            errors["user"] = "Duplicate Username, please enter another one or try logging in!"
             return errors
         # Check password length and matching confirmation
         if len(postData['regpassword']) < 8:
@@ -55,13 +44,25 @@ class UserManager(models.Manager):
         elif postData['regpassword'] != postData['regpassword2']:
             errors["password"] = "Passwords do not match!"
             return errors
-    
+    def item_validator(self, postData):
+        errors = {}
+        if len(postData['item']) < 4:
+            errors["item"] = "Item name must be 4 characters or more."
+            return errors
+
 class User(models.Model):
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255, default='')
-    email = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    user_name = models.CharField(max_length=255, default='')
     password = models.CharField(max_length=255)
+    hired_at = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 
     objects = UserManager()
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, related_name="added_by")
+    users = models.ManyToManyField(User, related_name="wishlist")
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)

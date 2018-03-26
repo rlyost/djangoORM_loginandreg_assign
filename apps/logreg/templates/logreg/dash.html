@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wish List Dashboard</title>
+    {% load static %}
+    <link rel='stylesheet' href="{% static 'css/logreg/logreg.css' %}" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+    <a href="{%url 'logoff' %}" class="options">Logout</a>
+    <h1>Hello {{ request.session.name }}</h1>
+    
+<!-- with all the data we can then construct a more structured output -->
+    <h2>Your Wish List:</h2>
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Added by</th>
+            <th>Date Added</th>
+            <th>Action</th>
+        </tr>
+        {% for item in myitems %}
+            <tr>
+                <td><a href="{%url 'wish' id=item.id %}" class="options">{{ item.item_name }}</a></td>
+                <td>{{ item.user.name }}</td>
+                <td>{{ item.created_at }}</td>
+                {% if item.user_id == request.session.id %}
+                    <td>
+                        <a href="{%url 'delete' id=item.id %}" class="options">Delete</a>
+                    </td>
+                {% else %}
+                    <td>
+                        <a href="{%url 'remove' id=item.id %}" class="options">Remove from my Wishlist</a>
+                    </td>    
+                {% endif %}
+            </tr>
+        {% endfor %}
+        <tr>
+            <td class='tbl_bot'></td>
+            <td class='tbl_bot'></td>
+            <td class='tbl_bot'></td>
+            <td class='tbl_bot'></td>
+        </tr>
+    </table>
+    <h2>Other User's Wish List:</h2>
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Added by</th>
+            <th>Date Added</th>
+            <th>Action</th>
+        </tr>
+        {% for item in otheritems %}
+            <tr>
+                <td><a href="{%url 'wish' id=user.id %}" class="options">{{ item.item_name }}</a></td>
+                <td>{{ item.user.name }}</td>
+                <td>{{ item.created_at }}</td>
+                <td>
+                    <a href="{%url 'addmywish' id=item.id %}" class="options">Add to me Wishlist</a>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td class='tbl_bot'></td>
+            <td class='tbl_bot'></td>
+            <td class='tbl_bot'></td>
+            <td class='tbl_bot'></td>
+        </tr>
+    </table>
+    <a href="{%url 'add'  %}" class="options">Add Item</a>
+</body>
+</html>
