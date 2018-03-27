@@ -8,6 +8,13 @@
     <div id='wrapper'>
         <a href="{%url 'dash' %}" class="options">Home</a><a href="{%url 'logoff' %}" class="options">Logout</a>
         <h1>Create a New Wish List Item</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div {% if message.tags %} class='{{ message.tags }}' {% endif %}>
+                    <p class='red'>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
         <form action='/additem' method='POST' class='addpage'>
             {% csrf_token %}
             <label for="item" class='label'>Item/Product:<input type="text" name="item" id="item"></label>       

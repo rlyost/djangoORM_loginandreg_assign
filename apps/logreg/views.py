@@ -94,7 +94,7 @@ def additem(request):
         if errors is not None:
             for tag, error in errors.iteritems():
                 messages.error(request, error, extra_tags=tag)
-            return redirect('ushow', profile_id)
+            return redirect('add')
         else:
             userid = request.session['id']
             a1 = Item.objects.create(item_name=request.POST['item'], user=User.objects.get(id=userid))
