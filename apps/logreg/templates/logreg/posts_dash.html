@@ -1,0 +1,8 @@
+<!-- Inside a new template that we'll call posts_index.html -->
+<div class="posts">
+  {% for post in posts %}
+  <div class="book">
+    <p>{{post.post}}</p>
+  </div>
+  {% endfor %}
+</div>

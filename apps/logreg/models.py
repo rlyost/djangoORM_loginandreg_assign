@@ -44,25 +44,23 @@ class UserManager(models.Manager):
         elif postData['regpassword'] != postData['regpassword2']:
             errors["password"] = "Passwords do not match!"
             return errors
-    def item_validator(self, postData):
+    def post_validator(self, postData):
         errors = {}
-        if len(postData['item']) < 4:
-            errors["item"] = "Item name must be 4 characters or more."
+        if len(postData['post']) < 4:
+            errors["item"] = "Post name must be 4 characters or more."
             return errors
 
 class User(models.Model):
     name = models.CharField(max_length=255)
     user_name = models.CharField(max_length=255, default='')
     password = models.CharField(max_length=255)
-    hired_at = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 
     objects = UserManager()
 
-class Item(models.Model):
-    item_name = models.CharField(max_length=255)
+class Post(models.Model):
+    post = models.CharField(max_length=255)
     user = models.ForeignKey(User, related_name="added_by")
-    users = models.ManyToManyField(User, related_name="wishlist")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)

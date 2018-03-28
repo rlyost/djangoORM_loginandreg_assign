@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from time import gmtime, strftime
-from .models import *    
+from .models import *
+from django.core import serializers
+import json
 import bcrypt
 
 # HOME *************************************************
@@ -52,69 +54,46 @@ def login(request):
             #redirects to success to display sucessful login
             return redirect('dash')
 
-# WISHLIST DASHBOARD *************************************************
+# FACEBOARD *************************************************
 
 def dash(request):
     this_user = User.objects.get(id=request.session['id'])
     context = {
         'user': this_user,
-        'myitems': Item.objects.filter(users=this_user.id),
-        'otheritems': Item.objects.exclude(users=this_user.id),
+        'posts': Post.objects.all(),
     }
     return render(request, 'logreg/dash.html', context)
 
-# ADD NEW ITEM *************************************************
+# ADD ITEM TO DATABASE AND POST *************************************************
 
 def add(request):
-    return render(request, 'logreg/add.html')
-
-# DISPLAY WISH LIST ITEM *************************************************
-
-def wish(request, id):
-    context = {
-        'item': Item.objects.get(id=id),
-        'users': User.objects.filter(wishlist=id),
-    }
-    return render(request, 'logreg/wish.html', context)
-
-# ADD ITEM TO USERS WISH LIST *************************************************
-
-def addmywish(request, id):
-    userid = request.session['id']
-    addwish = Item.objects.get(id=id)
-    addwish.users.add(userid)
-    addwish.save()
-    return redirect('dash')
-
-# ADD ITEM TO DATABASE AND USERS WISH LIST *************************************************
-
-def additem(request):
     if request.method == "POST":
-        errors = User.objects.item_validator(request.POST)
+        errors = User.objects.post_validator(request.POST)
         if errors is not None:
             for tag, error in errors.iteritems():
                 messages.error(request, error, extra_tags=tag)
             return redirect('add')
         else:
             userid = request.session['id']
-            a1 = Item.objects.create(item_name=request.POST['item'], user=User.objects.get(id=userid))
-            a1.users.add(userid)
-            a1.save()
-            return redirect('dash')
+            Post.objects.create(post=request.POST['post'], user_id=userid)
+            this_user = User.objects.get(id=request.session['id'])
+            context = {
+                'user': this_user,
+                'posts': Post.objects.all(),
+            }
+            return render(request, 'logreg/posts_dash.html', context)
 
-# REMOVE ITEM FROM USERS WISH LIST *************************************************
+def all_json(request):
+    posts = Post.objects.all()
+    return HttpResponse(serializers.serialize("json", posts), content_type='application/json')
 
-def remove(request, id):
-    userid = request.session['id']
-    this_user = User.objects.get(id=userid)
-    this_item = Item.objects.get(id=id)
-    this_item.users.remove(this_user)
-    return redirect('dash')
+def all_html(request):
+    return render(request, 'logreg/posts_dash.html', { "posts": Post.objects.all() })
 
 # DELETE WISH LIST ITEM FROM DATABASE *************************************************
 
 def delete(request, id):
-    destroyit = Item.objects.get(id=id)
+    destroyit = Post.objects.get(id=id)
     destroyit.delete()
     return redirect('dash')
 

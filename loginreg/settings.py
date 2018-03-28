@@ -26,7 +26,6 @@ SECRET_KEY = 'dgk(n)s49v7(wjfvg-=s&3e86&^l-_ldh#8tzq1dkg=&&j6o7f'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-# '54.67.95.36']
 
 
 # Application definition
